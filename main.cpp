@@ -4,7 +4,8 @@
 #include "Checking_Account.h"
 #include "Savings_Account.h"
 #include "Trust_Account.h"
-#include "IllegalBalanceException.H"
+#include "IllegalBalanceException.h"
+#include "InsufficientFundsException.h"
 
 int main()
 {
@@ -13,17 +14,21 @@ int main()
         std::unique_ptr<Account> a1 = std::make_unique<Checking_Account>("Moe", -10);
         std::cout << *a1 << std::endl;
     }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+
     catch (const IllegalBalanceException &e)
     {
         std::cerr << e.what() << '\n';
     }
-    catch (...)
+
+    std::unique_ptr<Account> a2 = std::make_unique<Savings_Account>("Larry", 1000, 5.0);
+
+    try
     {
-        std::cerr << "Unknown Error" << '\n';
+        a2->withdraw(2000);
+    }
+    catch (const InsufficientFundsException &e)
+    {
+        std::cerr << e.what() << '\n';
     }
 
     std::cout << "Program Terminated" << std::endl;
